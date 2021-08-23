@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">UIDemo</string>
+    <string name="Title">\u0020 Trustonic</string>
+    <string name="mobile_data">Mobile data</string>
+    <string name="wi_fi">Wi-Fi</string>
+    <string name="emergency_call">Dial</string>
+    <string name="lock_device">Lock Device</string>
+    <string name="lock_enable">Lock Enable</string>
+    <string name="lock_disable">Lock Disable</string>
+    <string name="text_hint">write text here</string>
+    <string name="text_area">Text Area</string>
+    <string name="network_info">Network Info</string>
+    <string name="emergency_call_text">Emergency Call</string>
+    <string name="device_lock">Device Lock</string>
+
+</resources>

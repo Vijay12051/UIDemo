@@ -33,14 +33,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var devicePolicyManager: DevicePolicyManager? = null
     private var activityManager: ActivityManager? = null
     private var compName: ComponentName? = null
-    //private var mWifiManager: WifiManager? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //mWifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         //Wifi Switch
         val wifiSwitch = findViewById<SwitchCompat>(R.id.wifi_switch)
@@ -48,13 +44,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val message = if (isChecked) "Wi-Fi:ON" else {
                 "Wi-Fi:OFF"
             }
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val panelIntent = Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY)
-                startActivityForResult(panelIntent, 0)
-            } else {
-                // add appropriate permissions to AndroidManifest file (see https://stackoverflow.com/questions/3930990/android-how-to-enable-disable-wifi-or-internet-connection-programmatically/61289575)
-                (this.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager)?.apply { isWifiEnabled = true *//*or false*//* }
-            }*/
             Toast.makeText(
                 this@MainActivity, message,
                 Toast.LENGTH_SHORT

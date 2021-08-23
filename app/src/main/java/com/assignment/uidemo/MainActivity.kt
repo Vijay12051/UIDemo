@@ -5,14 +5,11 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -20,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -63,7 +59,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         //Emergency call button
         val emergencyCall = findViewById<AppCompatButton>(R.id.emergency_call)
         emergencyCall.setOnClickListener {
-            emergencyCall()
+            //emergencyCall()
+            if(isPermissionGranted()){
+                emergencyCall();
+            }
         }
 
         //Device lock
@@ -80,38 +79,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun emergencyCall() {
-        val permissionCheck =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            mActivity?.let {
-                ActivityCompat.requestPermissions(
-                    it,
-                    arrayOf(Manifest.permission.CALL_PHONE),
-                    CALLPHONEREQUESTCODE
-                )
-            }
-        } else {
-            val callIntent = Intent(Intent.ACTION_CALL)
-            callIntent.data = Uri.parse("tel:+91 1234567890")
-            startActivity(callIntent)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            CALLPHONEREQUESTCODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                emergencyCall()
-            } else {
-                Toast.makeText(mActivity, "Request Rejected.", Toast.LENGTH_SHORT).show()
-            }
-            else -> {
-            }
-        }
+        val callIntent = Intent(Intent.ACTION_CALL)
+        callIntent.data = Uri.parse("tel:+91 1234567890")
+        startActivity(callIntent)
     }
 
     override fun onResume() {
@@ -166,4 +136,40 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+    private fun isPermissionGranted(): Boolean {
+        return if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.CALL_PHONE)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                //Log.v("TAG", "Permission is granted")
+                true
+            } else {
+                //Log.v("TAG", "Permission is revoked")
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CALL_PHONE), 1)
+                false
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            //Log.v("TAG", "Permission is granted")
+            true
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CALLPHONEREQUESTCODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                emergencyCall()
+            } else {
+                Toast.makeText(mActivity, "Request Rejected.", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+            }
+        }
+    }
+
 }
